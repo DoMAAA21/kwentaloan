@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { PageContainer } from "@/components/page-container";
+import { buildPageMetadata } from "@/lib/seo/site-metadata";
 
-export const metadata: Metadata = {
-  title: "About",
+export const metadata = buildPageMetadata({
+  title: "About Kwentaloan",
   description:
-    "About Kwentaloan — a free Philippine home loan calculator for estimating mortgage payments.",
-};
+    "Learn about Kwentaloan—a free, independent Philippine home loan calculator for monthly amortization, interest estimates, and lump sum scenarios in pesos.",
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

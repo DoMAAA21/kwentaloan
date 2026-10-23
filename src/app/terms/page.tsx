@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { PageContainer } from "@/components/page-container";
+import { buildPageMetadata } from "@/lib/seo/site-metadata";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Terms & Disclaimer",
   description:
-    "Terms of use and disclaimer for the Kwentaloan home loan calculator.",
-};
+    "Terms of use and calculator disclaimer for Kwentaloan—not a bank, Pag-IBIG, or loan approval service.",
+  path: "/terms",
+});
 
 export default function TermsPage() {
   return (

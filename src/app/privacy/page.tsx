@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
 import { PageContainer } from "@/components/page-container";
+import { buildPageMetadata } from "@/lib/seo/site-metadata";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Privacy Policy",
-  description: "Kwentaloan privacy policy — how we handle data, cookies, and advertising.",
-};
+  description:
+    "Kwentaloan privacy policy—how we handle cookies, analytics, advertising, and data when you use our Philippine home loan calculator.",
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (

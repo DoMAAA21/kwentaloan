@@ -4,9 +4,19 @@ import {
   Fredoka,
   Geist_Mono,
 } from "next/font/google";
+import { GoogleAnalytics } from "@/components/google-analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
+import { JsonLd } from "@/lib/seo/json-ld";
+import {
+  organizationJsonLd,
+  webSiteJsonLd,
+} from "@/lib/seo/organization-json-ld";
+import {
+  DEFAULT_DESCRIPTION,
+  SITE_NAME,
+} from "@/lib/seo/site-metadata";
 import { getSiteUrl } from "@/lib/site-url";
 import { cn } from "@/lib/utils";
 
@@ -34,11 +44,31 @@ const fredokaLogo = Fredoka({
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "Kwentaloan — Philippine Home Loan Calculator",
-    template: "%s | Kwentaloan",
+    default: `${SITE_NAME} — Philippine Home Loan Calculator`,
+    template: `%s | ${SITE_NAME}`,
   },
-  description:
-    "Free Philippine home loan calculator. Estimate monthly payments, total interest, and amortization in pesos.",
+  description: DEFAULT_DESCRIPTION,
+  applicationName: SITE_NAME,
+  category: "finance",
+  openGraph: {
+    type: "website",
+    locale: "en_PH",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} — Philippine Home Loan Calculator`,
+    description: DEFAULT_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} — Philippine Home Loan Calculator`,
+    description: DEFAULT_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -54,6 +84,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       )}
     >
       <body className="flex min-h-full flex-col">
+        <GoogleAnalytics />
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@graph": [organizationJsonLd(), webSiteJsonLd()],
+          }}
+        />
         <SiteHeader />
         <div className="flex flex-1 flex-col">{children}</div>
         <SiteFooter />

@@ -6,7 +6,6 @@ export type NavItem = {
 /** Primary header links (KWENTALOAN.md §5). */
 export const mainNav: NavItem[] = [
   { href: "/home-loan-calculator", label: "Home Loan Calculator" },
-  { href: "/guides", label: "Guides" },
   { href: "/about", label: "About" },
 ];
 

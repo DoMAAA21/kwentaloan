@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
 import { PageContainer } from "@/components/page-container";
+import { buildPageMetadata } from "@/lib/seo/site-metadata";
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: "Contact",
-  description: "Contact Kwentaloan for questions about the home loan calculator.",
-};
+  description:
+    "Contact Kwentaloan with questions about the Philippine home loan calculator, site feedback, or corrections.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

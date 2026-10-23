@@ -10,7 +10,16 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Project standards
 
-- **SEO:** Keep the site SEO compliant—semantic HTML, accurate page metadata (title, description, canonical URLs), Open Graph/Twitter tags where relevant, crawlable content, and performance that supports Core Web Vitals.
+### SEO (required)
+
+Use the shared helpers in `src/lib/seo/`—do not hand-roll metadata per page unless extending the helpers.
+
+- **`buildPageMetadata()`** — every indexable route exports `metadata` with title, description, **canonical**, **Open Graph**, **Twitter**, and `robots`.
+- **`JsonLd`** — structured data on key pages (site-wide Organization/WebSite in `layout.tsx`; calculator uses WebApplication, BreadcrumbList, FAQPage).
+- **`app/sitemap.ts`** and **`app/robots.ts`** — keep `INDEXABLE_ROUTES` in `site-metadata.ts` updated when adding public pages.
+- **Crawlable HTML** — one clear `<h1>` per page, useful `<h2>` sections, real copy (not calculator-only thin pages). Prefer FAQ/definitional content on the calculator route.
+- **`NEXT_PUBLIC_SITE_URL`** — set in production (Easypanel) so canonicals, sitemap, and JSON-LD use the live domain.
+- **Semantics & a11y** — labels, landmarks (`main`, headings), alt text; good Core Web Vitals (avoid blocking client JS for primary content where possible).
 
 ## App structure
 
