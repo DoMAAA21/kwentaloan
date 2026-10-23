@@ -47,10 +47,9 @@ export function LumpSumDraftForm({
   onAdd,
 }: LumpSumDraftFormProps) {
   const {
-    register,
     control,
     handleSubmit,
-    reset,
+    resetField,
     formState: { errors },
   } = useForm<LumpSumDraftValues>({
     defaultValues: {
@@ -72,11 +71,7 @@ export function LumpSumDraftForm({
       year: Number(values.year),
       amount,
     });
-    reset({
-      month: values.month,
-      year: values.year,
-      amount: "",
-    });
+    resetField("amount", { defaultValue: "" });
   }
 
   return (
@@ -95,20 +90,29 @@ export function LumpSumDraftForm({
           <Label htmlFor="extra-month" className={calculatorLabelClassName}>
             Month
           </Label>
-          <select
-            id="extra-month"
-            className={cn(
-              calculatorFieldClassName,
-              "w-full rounded-lg border border-input bg-transparent px-2.5",
+          <Controller
+            name="month"
+            control={control}
+            render={({ field }) => (
+              <select
+                id="extra-month"
+                className={cn(
+                  calculatorFieldClassName,
+                  "w-full rounded-lg border border-input bg-transparent px-2.5",
+                )}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                ref={field.ref}
+              >
+                {MONTHS.map((month) => (
+                  <option key={month.value} value={month.value}>
+                    {month.label}
+                  </option>
+                ))}
+              </select>
             )}
-            {...register("month")}
-          >
-            {MONTHS.map((month) => (
-              <option key={month.value} value={month.value}>
-                {month.label}
-              </option>
-            ))}
-          </select>
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="extra-year" className={calculatorLabelClassName}>
