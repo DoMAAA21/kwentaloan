@@ -4,7 +4,6 @@ import {
   Fredoka,
   Geist_Mono,
 } from "next/font/google";
-import { GoogleAdSenseScript } from "@/components/ads/google-adsense-script";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -18,8 +17,11 @@ import {
   DEFAULT_DESCRIPTION,
   SITE_NAME,
 } from "@/lib/seo/site-metadata";
+import { getAdSenseClientId } from "@/lib/ads/adsense-config";
 import { getSiteUrl } from "@/lib/site-url";
 import { cn } from "@/lib/utils";
+
+const adSenseClientId = getAdSenseClientId();
 
 /** Legibility-focused typeface (Braille Institute); used for body and headings. */
 const atkinson = Atkinson_Hyperlegible({
@@ -84,9 +86,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         fredokaLogo.variable,
       )}
     >
+      <head>
+        {adSenseClientId ? (
+          <>
+            <meta name="google-adsense-account" content={adSenseClientId} />
+            <script
+              async
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adSenseClientId}`}
+              crossOrigin="anonymous"
+            />
+          </>
+        ) : null}
+      </head>
       <body className="flex min-h-full flex-col">
         <GoogleAnalytics />
-        <GoogleAdSenseScript />
         <JsonLd
           data={{
             "@context": "https://schema.org",

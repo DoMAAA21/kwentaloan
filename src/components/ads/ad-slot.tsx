@@ -18,18 +18,18 @@ export function AdSlot({
   label = "Advertisement",
 }: AdSlotProps) {
   const clientId = getAdSenseClientId();
-  const filled = useRef(false);
+  const insRef = useRef<HTMLModElement>(null);
 
   useEffect(() => {
-    if (!clientId || !slotId || filled.current) {
+    if (!clientId || !slotId || !insRef.current) {
       return;
     }
+
     try {
       window.adsbygoogle = window.adsbygoogle || [];
       window.adsbygoogle.push({});
-      filled.current = true;
     } catch {
-      // AdSense may reject duplicate pushes; ignore in strict mode double-mount
+      // Duplicate push on the same unit; ignore in React strict mode
     }
   }, [clientId, slotId]);
 
@@ -50,6 +50,7 @@ export function AdSlot({
       </p>
       <div className="flex min-h-[90px] justify-center px-2">
         <ins
+          ref={insRef}
           className="adsbygoogle block w-full max-w-4xl"
           style={{ display: "block" }}
           data-ad-client={clientId}

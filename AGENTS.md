@@ -22,7 +22,7 @@ Use the shared helpers in `src/lib/seo/`—do not hand-roll metadata per page un
 
 ### AdSense
 
-- Script: `GoogleAdSenseScript` in `layout.tsx` (requires `NEXT_PUBLIC_ADSENSE_CLIENT_ID`).
+- Script: `adsbygoogle.js` in root `layout.tsx` `<head>` when `NEXT_PUBLIC_ADSENSE_CLIENT_ID` is set (build-time env).
 - Units: `AdSlot` in `components/ads/` — never between labels and inputs, over charts/tables, or near primary buttons (see KWENTALOAN.md §6).
 - Slot env vars: `NEXT_PUBLIC_ADSENSE_SLOT_*` in `.env.example`. If client or slot is unset, nothing renders (safe for local dev).
 - **Semantics & a11y** — labels, landmarks (`main`, headings), alt text; good Core Web Vitals (avoid blocking client JS for primary content where possible).
