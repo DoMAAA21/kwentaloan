@@ -45,9 +45,10 @@ export function SiteHeaderNav() {
         <div className="flex items-center justify-between gap-4">
           <Link
             href="/"
-            className="font-heading text-xl font-bold text-foreground rounded-sm focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            aria-label="Kwentaloan home"
+            className="font-logo text-xl font-bold leading-none tracking-tight text-foreground rounded-sm focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           >
-            Kwentaloan
+            Kwenta<span className="text-[#0055AA] text-2xl">LOAN</span>
           </Link>
 
           <MainNav className="hidden md:block" />

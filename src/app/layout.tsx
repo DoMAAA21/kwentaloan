@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { Atkinson_Hyperlegible, Geist_Mono } from "next/font/google";
+import {
+  Atkinson_Hyperlegible,
+  Fredoka,
+  Geist_Mono,
+} from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
@@ -17,6 +21,14 @@ const atkinson = Atkinson_Hyperlegible({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+/** Rounded wordmark for Kwentaloan logo. */
+const fredokaLogo = Fredoka({
+  weight: ["600", "700"],
+  subsets: ["latin"],
+  variable: "--font-fredoka",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -38,6 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "antialiased",
         atkinson.variable,
         geistMono.variable,
+        fredokaLogo.variable,
       )}
     >
       <body className="flex min-h-full flex-col">
