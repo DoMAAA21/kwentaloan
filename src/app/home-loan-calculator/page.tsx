@@ -91,8 +91,8 @@ export default function HomeLoanCalculatorPage() {
           </h1>
           <p className="text-lg leading-relaxed text-muted-foreground">
             Estimate your monthly principal-and-interest payment, see how much
-            interest you may pay over the term, plan extra principal payments,
-            and view a full amortization schedule—using Philippine pesos (₱).
+            interest you may pay over the term, optional lump sum payments, and
+            a full amortization schedule—using Philippine pesos (₱).
             This is an educational estimate, not a loan offer or financial
             advice.
           </p>
@@ -129,11 +129,11 @@ export default function HomeLoanCalculatorPage() {
               </dd>
             </div>
             <div>
-              <dt className="font-semibold">Extra principal payment</dt>
+              <dt className="font-semibold">Lump sum</dt>
               <dd className="text-muted-foreground">
-                An additional amount applied directly to the loan balance, which
-                may reduce total interest and shorten the term if your lender
-                allows it.
+                A one-time extra payment on top of your regular amortization,
+                often called lump sum in the Philippines. It may reduce total
+                interest and shorten the term if your lender allows it.
               </dd>
             </div>
           </dl>

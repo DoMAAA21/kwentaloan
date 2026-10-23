@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { RiArrowDownSLine, RiArrowUpSLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -31,6 +30,7 @@ import {
   calculatorFieldClassName,
   calculatorLabelClassName,
 } from "./field-styles";
+import { LumpSumDraftForm } from "./lump-sum-draft-form";
 
 const MONTHS = [
   { value: "1", label: "January" },
@@ -66,13 +66,6 @@ export function HomeLoanCalculator() {
   const [extraPayments, setExtraPayments] = useState<ExtraPayment[]>([]);
   const [scheduleView, setScheduleView] = useState<ScheduleView>("monthly");
   const [affordability, setAffordability] = useState(SAMPLE_AFFORDABILITY);
-  const [extraDraft, setExtraDraft] = useState({
-    month: SAMPLE_LOAN_FORM.startMonth,
-    year: SAMPLE_LOAN_FORM.startYear,
-    amount: "5000",
-  });
-  const [showAllDetails, setShowAllDetails] = useState(false);
-
   const parsed = useMemo(() => parseLoanForm(form), [form]);
 
   const comparison = useMemo(() => {
@@ -130,26 +123,21 @@ export function HomeLoanCalculator() {
     setErrors(result.errors);
   }
 
-  function addExtraPayment() {
-    const amount = Number(extraDraft.amount.replace(/,/g, ""));
-    const year = Number(extraDraft.year);
-    const month = Number(extraDraft.month);
-    if (!Number.isFinite(amount) || amount <= 0) {
-      return;
-    }
-    if (!Number.isInteger(month) || month < 1 || month > 12) {
-      return;
-    }
-    if (!Number.isFinite(year)) {
+  function addLumpSum(entry: {
+    month: number;
+    year: number;
+    amount: number;
+  }) {
+    if (!Number.isFinite(entry.amount) || entry.amount <= 0) {
       return;
     }
     setExtraPayments((current) => [
       ...current,
       {
         id: createExtraPaymentId(),
-        year,
-        month,
-        amount,
+        year: entry.year,
+        month: entry.month,
+        amount: entry.amount,
       },
     ]);
   }
@@ -164,53 +152,17 @@ export function HomeLoanCalculator() {
   const interestShare =
     totalCost > 0 ? Math.min(100, (interestTotal / totalCost) * 100) : 0;
 
+  const hasValidResults = Boolean(parsed.data && schedule);
+
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <p className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-base leading-relaxed text-muted-foreground sm:max-w-2xl">
-          <strong className="font-semibold text-foreground">Sample data:</strong>{" "}
-          {showAllDetails
-            ? "The values below are an example only—not a bank offer or recommended rate."
-            : "Change the numbers below to estimate your monthly payment."}
-        </p>
-        <Button
-          type="button"
-          variant="outline"
-          className="h-11 shrink-0 px-4"
-          aria-expanded={showAllDetails}
-          aria-controls="calculator-advanced-sections"
-          onClick={() => setShowAllDetails((open) => !open)}
-        >
-          {showAllDetails ? (
-            <>
-              <RiArrowUpSLine aria-hidden className="size-5" />
-              Simple view
-            </>
-          ) : (
-            <>
-              <RiArrowDownSLine aria-hidden className="size-5" />
-              Show all details
-            </>
-          )}
-        </Button>
-      </div>
+      <p className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-base leading-relaxed text-muted-foreground">
+        <strong className="font-semibold text-foreground">Sample data:</strong>{" "}
+        Change the fields to match your scenario—results update as you type.
+        Not a bank offer or recommended rate.
+      </p>
 
-      {!showAllDetails && schedule && parsed.data ? (
-        <SimplePaymentHighlight
-          monthlyPayment={schedule.monthlyPayment}
-          termYears={parsed.data.termYears}
-          loanAmount={parsed.data.principal}
-          totalInterest={schedule.totalInterest}
-        />
-      ) : null}
-
-      <div
-        className={cn(
-          "grid gap-8",
-          showAllDetails &&
-            "lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start",
-        )}
-      >
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
         <section aria-labelledby="loan-inputs-heading" className="space-y-6">
           <Card>
             <CardHeader>
@@ -263,14 +215,6 @@ export function HomeLoanCalculator() {
                   aria-invalid={Boolean(errors.downPayment)}
                 />
                 <FieldError message={errors.downPayment} />
-                {parsed.data ? (
-                  <p className="text-base text-muted-foreground">
-                    Loan amount (financed):{" "}
-                    <span className="font-semibold text-foreground tabular-nums">
-                      {formatPeso(parsed.data.principal, true)}
-                    </span>
-                  </p>
-                ) : null}
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
@@ -316,88 +260,25 @@ export function HomeLoanCalculator() {
                 </div>
               </div>
 
-              {showAllDetails ? (
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="startMonth"
-                      className={calculatorLabelClassName}
-                    >
-                      Start month
-                    </Label>
-                    <select
-                      id="startMonth"
-                      className={cn(
-                        calculatorFieldClassName,
-                        "w-full rounded-lg border border-input bg-transparent px-2.5",
-                      )}
-                      value={form.startMonth}
-                      onChange={(event) =>
-                        updateForm("startMonth", event.target.value)
-                      }
-                      onBlur={validateOnBlur}
-                    >
-                      {MONTHS.map((month) => (
-                        <option key={month.value} value={month.value}>
-                          {month.label}
-                        </option>
-                      ))}
-                    </select>
-                    <FieldError message={errors.startMonth} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="startYear"
-                      className={calculatorLabelClassName}
-                    >
-                      Start year
-                    </Label>
-                    <Input
-                      id="startYear"
-                      inputMode="numeric"
-                      className={calculatorFieldClassName}
-                      value={form.startYear}
-                      onChange={(event) =>
-                        updateForm("startYear", event.target.value)
-                      }
-                      onBlur={validateOnBlur}
-                      aria-invalid={Boolean(errors.startYear)}
-                    />
-                    <FieldError message={errors.startYear} />
-                  </div>
-                </div>
-              ) : null}
-            </CardContent>
-          </Card>
-
-          {showAllDetails ? (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Extra principal payments</CardTitle>
-              <CardDescription className="text-base">
-                Optional lump sums applied to principal on the chosen month.
-                Assumes no prepayment penalties—your lender may differ.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="extra-month" className={calculatorLabelClassName}>
-                    Month
+                  <Label
+                    htmlFor="startMonth"
+                    className={calculatorLabelClassName}
+                  >
+                    Start month
                   </Label>
                   <select
-                    id="extra-month"
+                    id="startMonth"
                     className={cn(
                       calculatorFieldClassName,
                       "w-full rounded-lg border border-input bg-transparent px-2.5",
                     )}
-                    value={extraDraft.month}
+                    value={form.startMonth}
                     onChange={(event) =>
-                      setExtraDraft((current) => ({
-                        ...current,
-                        month: event.target.value,
-                      }))
+                      updateForm("startMonth", event.target.value)
                     }
+                    onBlur={validateOnBlur}
                   >
                     {MONTHS.map((month) => (
                       <option key={month.value} value={month.value}>
@@ -405,45 +286,48 @@ export function HomeLoanCalculator() {
                       </option>
                     ))}
                   </select>
+                  <FieldError message={errors.startMonth} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="extra-year" className={calculatorLabelClassName}>
-                    Year
+                  <Label
+                    htmlFor="startYear"
+                    className={calculatorLabelClassName}
+                  >
+                    Start year
                   </Label>
                   <Input
-                    id="extra-year"
+                    id="startYear"
                     inputMode="numeric"
                     className={calculatorFieldClassName}
-                    value={extraDraft.year}
+                    value={form.startYear}
                     onChange={(event) =>
-                      setExtraDraft((current) => ({
-                        ...current,
-                        year: event.target.value,
-                      }))
+                      updateForm("startYear", event.target.value)
                     }
+                    onBlur={validateOnBlur}
+                    aria-invalid={Boolean(errors.startYear)}
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="extra-amount" className={calculatorLabelClassName}>
-                    Amount (₱)
-                  </Label>
-                  <Input
-                    id="extra-amount"
-                    inputMode="decimal"
-                    className={calculatorFieldClassName}
-                    value={extraDraft.amount}
-                    onChange={(event) =>
-                      setExtraDraft((current) => ({
-                        ...current,
-                        amount: event.target.value,
-                      }))
-                    }
-                  />
+                  <FieldError message={errors.startYear} />
                 </div>
               </div>
-              <Button type="button" onClick={addExtraPayment}>
-                Add extra payment
-              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Lump sum (optional)</CardTitle>
+              <CardDescription className="text-base">
+                Add a one-time lump sum payment if you plan to pay extra on a
+                specific month. Leave blank if none—none are included by
+                default.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <LumpSumDraftForm
+                key={`${form.startMonth}-${form.startYear}`}
+                defaultMonth={form.startMonth}
+                defaultYear={form.startYear}
+                onAdd={addLumpSum}
+              />
               {extraPayments.length > 0 ? (
                 <ul className="space-y-2">
                   {extraPayments.map((entry) => (
@@ -466,14 +350,100 @@ export function HomeLoanCalculator() {
                     </li>
                   ))}
                 </ul>
-              ) : null}
+              ) : (
+                <p className="text-base text-muted-foreground">
+                  No lump sum added yet.
+                </p>
+              )}
             </CardContent>
           </Card>
-          ) : null}
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Affordability (optional)</CardTitle>
+              <CardDescription className="text-base">
+                Rough check only—banks use their own rules.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="gross-income" className={calculatorLabelClassName}>
+                  Gross monthly income (₱)
+                </Label>
+                <Input
+                  id="gross-income"
+                  inputMode="decimal"
+                  className={calculatorFieldClassName}
+                  value={affordability.grossMonthlyIncome}
+                  onChange={(event) =>
+                    setAffordability((current) => ({
+                      ...current,
+                      grossMonthlyIncome: event.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="monthly-debt" className={calculatorLabelClassName}>
+                    Other monthly debt (₱)
+                  </Label>
+                  <Input
+                    id="monthly-debt"
+                    inputMode="decimal"
+                    className={calculatorFieldClassName}
+                    value={affordability.monthlyDebt}
+                    onChange={(event) =>
+                      setAffordability((current) => ({
+                        ...current,
+                        monthlyDebt: event.target.value,
+                      }))
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="housing-share" className={calculatorLabelClassName}>
+                    Housing share of gross income (%)
+                  </Label>
+                  <Input
+                    id="housing-share"
+                    inputMode="decimal"
+                    className={calculatorFieldClassName}
+                    value={affordability.housingSharePercent}
+                    onChange={(event) =>
+                      setAffordability((current) => ({
+                        ...current,
+                        housingSharePercent: event.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
-        {showAllDetails ? (
         <section aria-labelledby="summary-heading" className="space-y-6">
+          {!hasValidResults ? (
+            <Card>
+              <CardContent className="py-10 text-center text-base text-muted-foreground">
+                Fix any highlighted loan fields to see your monthly payment and
+                summary.
+              </CardContent>
+            </Card>
+          ) : null}
+
+          {hasValidResults && schedule && parsed.data ? (
+            <SimplePaymentHighlight
+              monthlyPayment={schedule.monthlyPayment}
+              termYears={parsed.data.termYears}
+              loanAmount={parsed.data.principal}
+              totalInterest={schedule.totalInterest}
+            />
+          ) : null}
+
+          {hasValidResults ? (
+          <>
           <Card>
             <CardHeader>
               <CardTitle id="summary-heading" className="text-lg">
@@ -531,7 +501,7 @@ export function HomeLoanCalculator() {
               {comparison && comparison.interestSaved > 0 ? (
                 <div className="mt-4 rounded-lg bg-primary/10 px-4 py-3 text-base">
                   <p>
-                    Extra payments may save about{" "}
+                    Lump sum payments may save about{" "}
                     <strong>{formatPeso(comparison.interestSaved)}</strong> in
                     interest and finish about{" "}
                     <strong>{comparison.monthsSaved}</strong> months sooner
@@ -544,67 +514,14 @@ export function HomeLoanCalculator() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Affordability estimator</CardTitle>
+              <CardTitle className="text-lg">Affordability estimate</CardTitle>
               <CardDescription className="text-base">
-                Illustration only—banks use their own underwriting and may look
-                at net income, credit, and other debts.
+                Based on the optional income fields you entered—not a bank
+                approval.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="gross-income" className={calculatorLabelClassName}>
-                  Gross monthly income (₱)
-                </Label>
-                <Input
-                  id="gross-income"
-                  inputMode="decimal"
-                  className={calculatorFieldClassName}
-                  value={affordability.grossMonthlyIncome}
-                  onChange={(event) =>
-                    setAffordability((current) => ({
-                      ...current,
-                      grossMonthlyIncome: event.target.value,
-                    }))
-                  }
-                />
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="monthly-debt" className={calculatorLabelClassName}>
-                    Other monthly debt (₱)
-                  </Label>
-                  <Input
-                    id="monthly-debt"
-                    inputMode="decimal"
-                    className={calculatorFieldClassName}
-                    value={affordability.monthlyDebt}
-                    onChange={(event) =>
-                      setAffordability((current) => ({
-                        ...current,
-                        monthlyDebt: event.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="housing-share" className={calculatorLabelClassName}>
-                    Housing share of gross income (%)
-                  </Label>
-                  <Input
-                    id="housing-share"
-                    inputMode="decimal"
-                    className={calculatorFieldClassName}
-                    value={affordability.housingSharePercent}
-                    onChange={(event) =>
-                      setAffordability((current) => ({
-                        ...current,
-                        housingSharePercent: event.target.value,
-                      }))
-                    }
-                  />
-                </div>
-              </div>
-              <dl className="grid gap-3 rounded-lg border border-border bg-muted/30 p-4">
+            <CardContent>
+              <dl className="grid gap-3">
                 <SummaryItem
                   label="Estimated affordable payment"
                   value={formatPeso(affordablePayment)}
@@ -616,26 +533,12 @@ export function HomeLoanCalculator() {
               </dl>
             </CardContent>
           </Card>
+          </>
+          ) : null}
         </section>
-        ) : null}
       </div>
 
-      <div id="calculator-advanced-sections">
-      {!showAllDetails ? (
-        <div className="flex justify-center">
-          <Button
-            type="button"
-            variant="secondary"
-            className="h-11 px-6"
-            onClick={() => setShowAllDetails(true)}
-          >
-            <RiArrowDownSLine aria-hidden className="size-5" />
-            Show amortization, charts &amp; more
-          </Button>
-        </div>
-      ) : null}
-
-      {showAllDetails && schedule && parsed.data ? (
+      {hasValidResults && schedule && parsed.data ? (
         <section aria-labelledby="visualization-heading" className="space-y-4">
           <h2 id="visualization-heading" className="font-heading text-2xl font-bold">
             Principal vs interest
@@ -682,7 +585,7 @@ export function HomeLoanCalculator() {
         </section>
       ) : null}
 
-      {showAllDetails && schedule ? (
+      {hasValidResults && schedule ? (
         <section aria-labelledby="schedule-heading" className="space-y-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 id="schedule-heading" className="font-heading text-2xl font-bold">
@@ -728,7 +631,7 @@ export function HomeLoanCalculator() {
                       Principal
                     </th>
                     <th scope="col" className="px-2 py-3 font-semibold text-right">
-                      Extra
+                      Lump sum
                     </th>
                     <th scope="col" className="px-2 py-3 font-semibold text-right">
                       Balance
@@ -778,7 +681,7 @@ export function HomeLoanCalculator() {
                       Principal
                     </th>
                     <th scope="col" className="px-2 py-3 font-semibold text-right">
-                      Extra
+                      Lump sum
                     </th>
                     <th scope="col" className="px-2 py-3 font-semibold text-right">
                       Total paid
@@ -817,7 +720,6 @@ export function HomeLoanCalculator() {
           </div>
         </section>
       ) : null}
-      </div>
     </div>
   );
 }
