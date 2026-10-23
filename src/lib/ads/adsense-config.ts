@@ -15,3 +15,4 @@ export const AD_SLOTS = {
   content: process.env.NEXT_PUBLIC_ADSENSE_SLOT_CONTENT?.trim(),
   home: process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME?.trim(),
 } as const;
+// 
