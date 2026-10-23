@@ -4,6 +4,7 @@ import {
   Fredoka,
   Geist_Mono,
 } from "next/font/google";
+import { GoogleAdSenseScript } from "@/components/ads/google-adsense-script";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -85,6 +86,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col">
         <GoogleAnalytics />
+        <GoogleAdSenseScript />
         <JsonLd
           data={{
             "@context": "https://schema.org",

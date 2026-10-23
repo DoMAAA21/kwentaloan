@@ -1,3 +1,5 @@
+import { AdSlot } from "@/components/ads/ad-slot";
+import { AD_SLOTS } from "@/lib/ads/adsense-config";
 import { HomeLoanCalculator } from "./_components/home-loan-calculator";
 import { PageContainer } from "@/components/page-container";
 import { JsonLd } from "@/lib/seo/json-ld";
@@ -51,7 +53,11 @@ export default function HomeLoanCalculatorPage() {
           </p>
         </header>
 
+        <AdSlot slotId={AD_SLOTS.calcTop} label="Advertisement" />
+
         <HomeLoanCalculator />
+
+        <AdSlot slotId={AD_SLOTS.calcMid} label="Advertisement" />
 
         <section
           aria-labelledby="how-it-works-heading"
@@ -89,6 +95,8 @@ export default function HomeLoanCalculatorPage() {
             ))}
           </dl>
         </section>
+
+        <AdSlot slotId={AD_SLOTS.content} label="Advertisement" />
 
         <section
           aria-labelledby="calculator-definitions-heading"

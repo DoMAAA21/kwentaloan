@@ -4,5 +4,5 @@ export function getSiteUrl(): string {
   if (fromEnv) {
     return fromEnv;
   }
-  return "https://kwentaloan.com";
+  return "https://kwentaloan.cloud";
 }

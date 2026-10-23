@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { AdSlot } from "@/components/ads/ad-slot";
 import { PageContainer } from "@/components/page-container";
+import { AD_SLOTS } from "@/lib/ads/adsense-config";
 import { buttonVariants } from "@/components/ui/button";
 import { buildPageMetadata } from "@/lib/seo/site-metadata";
 import { cn } from "@/lib/utils";
@@ -42,6 +44,8 @@ export default function Home() {
             Use the home loan calculator
           </Link>
         </header>
+
+        <AdSlot slotId={AD_SLOTS.home} label="Advertisement" />
 
         <section
           aria-labelledby="home-features-heading"

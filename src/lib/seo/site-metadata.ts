@@ -6,14 +6,24 @@ export const SITE_NAME = "Kwentaloan";
 export const DEFAULT_DESCRIPTION =
   "Free Philippine home loan calculator. Estimate monthly amortization, total interest, lump sum payments, and mortgage schedules in pesos (₱)—no sign-up.";
 
-/** Indexable marketing and policy routes for sitemap generation. */
-export const INDEXABLE_ROUTES: { path: string; priority: number }[] = [
-  { path: "/", priority: 1 },
-  { path: "/home-loan-calculator", priority: 0.95 },
-  { path: "/about", priority: 0.6 },
-  { path: "/contact", priority: 0.5 },
-  { path: "/privacy", priority: 0.4 },
-  { path: "/terms", priority: 0.4 },
+export type SitemapEntry = {
+  path: string;
+  label: string;
+  priority: number;
+};
+
+/** Public pages included in `/sitemap.xml` and the HTML sitemap. */
+export const SITEMAP_ENTRIES: SitemapEntry[] = [
+  { path: "/", label: "Home", priority: 1 },
+  {
+    path: "/home-loan-calculator",
+    label: "Home Loan Calculator",
+    priority: 0.95,
+  },
+  { path: "/about", label: "About", priority: 0.6 },
+  { path: "/contact", label: "Contact", priority: 0.5 },
+  { path: "/privacy", label: "Privacy Policy", priority: 0.4 },
+  { path: "/terms", label: "Terms & Disclaimer", priority: 0.4 },
 ];
 
 type PageMetadataOptions = {

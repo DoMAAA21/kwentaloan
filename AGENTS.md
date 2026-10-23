@@ -16,9 +16,15 @@ Use the shared helpers in `src/lib/seo/`—do not hand-roll metadata per page un
 
 - **`buildPageMetadata()`** — every indexable route exports `metadata` with title, description, **canonical**, **Open Graph**, **Twitter**, and `robots`.
 - **`JsonLd`** — structured data on key pages (site-wide Organization/WebSite in `layout.tsx`; calculator uses WebApplication, BreadcrumbList, FAQPage).
-- **`app/sitemap.ts`** and **`app/robots.ts`** — keep `INDEXABLE_ROUTES` in `site-metadata.ts` updated when adding public pages.
+- **`app/sitemap.ts`** (`/sitemap.xml`) and **`app/robots.ts`** — update `SITEMAP_ENTRIES` in `site-metadata.ts` when adding public pages.
 - **Crawlable HTML** — one clear `<h1>` per page, useful `<h2>` sections, real copy (not calculator-only thin pages). Prefer FAQ/definitional content on the calculator route.
 - **`NEXT_PUBLIC_SITE_URL`** — set in production (Easypanel) so canonicals, sitemap, and JSON-LD use the live domain.
+
+### AdSense
+
+- Script: `GoogleAdSenseScript` in `layout.tsx` (requires `NEXT_PUBLIC_ADSENSE_CLIENT_ID`).
+- Units: `AdSlot` in `components/ads/` — never between labels and inputs, over charts/tables, or near primary buttons (see KWENTALOAN.md §6).
+- Slot env vars: `NEXT_PUBLIC_ADSENSE_SLOT_*` in `.env.example`. If client or slot is unset, nothing renders (safe for local dev).
 - **Semantics & a11y** — labels, landmarks (`main`, headings), alt text; good Core Web Vitals (avoid blocking client JS for primary content where possible).
 
 ## App structure
