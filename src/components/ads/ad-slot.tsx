@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { getAdSenseClientId } from "@/lib/ads/adsense-config";
 import { cn } from "@/lib/utils";
 
@@ -18,10 +18,9 @@ export function AdSlot({
   label = "Advertisement",
 }: AdSlotProps) {
   const clientId = getAdSenseClientId();
-  const insRef = useRef<HTMLModElement>(null);
 
   useEffect(() => {
-    if (!clientId || !slotId || !insRef.current) {
+    if (!clientId || !slotId) {
       return;
     }
 
@@ -50,7 +49,6 @@ export function AdSlot({
       </p>
       <div className="flex min-h-[90px] justify-center px-2">
         <ins
-          ref={insRef}
           className="adsbygoogle block w-full max-w-4xl"
           style={{ display: "block" }}
           data-ad-client={clientId}

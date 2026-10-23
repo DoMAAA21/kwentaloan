@@ -16,7 +16,7 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Optional: set at build time in Easypanel (Build Args) for canonical URLs / metadataBase
+# Optional: set at build time in Easypanel for canonical URLs / metadataBase
 ARG NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
 
