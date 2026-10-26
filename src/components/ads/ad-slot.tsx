@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { getAdSenseClientId } from "@/lib/ads/adsense-config";
 import { cn } from "@/lib/utils";
 
@@ -18,17 +18,28 @@ export function AdSlot({
   label = "Advertisement",
 }: AdSlotProps) {
   const clientId = getAdSenseClientId();
+  const insRef = useRef<HTMLModElement>(null);
 
   useEffect(() => {
-    if (!clientId || !slotId) {
+    const ins = insRef.current;
+    if (!clientId || !slotId || !ins) {
       return;
     }
+
+    // React Strict Mode runs effects twice; AdSense allows one push per <ins>.
+    if (
+      ins.dataset.adRequested === "true" ||
+      ins.dataset.adsbygoogleStatus === "done"
+    ) {
+      return;
+    }
+    ins.dataset.adRequested = "true";
 
     try {
       window.adsbygoogle = window.adsbygoogle || [];
       window.adsbygoogle.push({});
     } catch {
-      // Duplicate push on the same unit; ignore in React strict mode
+      delete ins.dataset.adRequested;
     }
   }, [clientId, slotId]);
 
@@ -49,6 +60,7 @@ export function AdSlot({
       </p>
       <div className="flex min-h-[90px] justify-center px-2">
         <ins
+          ref={insRef}
           className="adsbygoogle block w-full max-w-4xl"
           style={{ display: "block" }}
           data-ad-client={clientId}
