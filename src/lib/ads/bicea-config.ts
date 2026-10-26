@@ -6,9 +6,12 @@ export const BICEA_AD_CONTAINER_ID =
   "container-64a652bd9508c5d96edd42cf3049dc76";
 
 export function isBiceaAdEnabled(): boolean {
-  const flag = process.env.NEXT_PUBLIC_BICEA_AD_ENABLED?.trim().toLowerCase();
-  if (flag === "false" || flag === "0") {
-    return false;
-  }
-  return true;
+  // Disabled — Bicea unit served adult ads; leave off unless you replace the network/unit.
+  return false;
+
+  // const flag = process.env.NEXT_PUBLIC_BICEA_AD_ENABLED?.trim().toLowerCase();
+  // if (flag === "false" || flag === "0") {
+  //   return false;
+  // }
+  // return true;
 }

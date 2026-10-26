@@ -4,7 +4,7 @@ import {
   Fredoka,
   Geist_Mono,
 } from "next/font/google";
-import { BiceaAdScript } from "@/components/ads/bicea-ad-script";
+// import { BiceaAdScript } from "@/components/ads/bicea-ad-script";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -101,7 +101,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="flex min-h-full flex-col">
         <GoogleAnalytics />
-        <BiceaAdScript />
+        {/* <BiceaAdScript /> — Bicea disabled (inappropriate ads) */}
         <JsonLd
           data={{
             "@context": "https://schema.org",
