@@ -5,7 +5,6 @@ import {
   Geist_Mono,
 } from "next/font/google";
 // import { BiceaAdScript } from "@/components/ads/bicea-ad-script";
-import { RichAdsPushScript } from "@/components/ads/richads-push-script";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -20,6 +19,10 @@ import {
   SITE_NAME,
 } from "@/lib/seo/site-metadata";
 import { getAdSenseClientId } from "@/lib/ads/adsense-config";
+import {
+  isRichAdsPushEnabled,
+  RICHADS_PUSH_SCRIPT_SRC,
+} from "@/lib/ads/richads-config";
 import { getSiteUrl } from "@/lib/site-url";
 import { cn } from "@/lib/utils";
 
@@ -99,10 +102,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             />
           </>
         ) : null}
+        {isRichAdsPushEnabled() ? (
+          <script
+            type="module"
+            async
+            src={RICHADS_PUSH_SCRIPT_SRC}
+            data-cfasync="false"
+          />
+        ) : null}
       </head>
       <body className="flex min-h-full flex-col">
         <GoogleAnalytics />
-        <RichAdsPushScript />
         {/* <BiceaAdScript /> — Bicea disabled (inappropriate ads) */}
         <JsonLd
           data={{
