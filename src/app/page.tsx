@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { AdSlot } from "@/components/ads/ad-slot";
-// import { BiceaAdSlot } from "@/components/ads/bicea-ad-slot";
 import { PageContainer } from "@/components/page-container";
 import { AD_SLOTS } from "@/lib/ads/adsense-config";
 import { buttonVariants } from "@/components/ui/button";
@@ -47,7 +46,6 @@ export default function Home() {
         </header>
 
         <AdSlot slotId={AD_SLOTS.home} label="Advertisement" />
-        {/* <BiceaAdSlot /> — Bicea disabled (inappropriate ads) */}
 
         <section
           aria-labelledby="home-features-heading"
